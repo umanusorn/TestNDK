@@ -1,10 +1,10 @@
 package com.example.um2015.testndk;
 
 import android.app.Activity;
-import android.app.NativeActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -34,6 +34,9 @@ protected void onCreate(Bundle savedInstanceState) {
 	catch( IOException e ) {}
 	super.onCreate(savedInstanceState);
 	setContentView(R.layout.activity_main);
+
+	TextView textView = (TextView) findViewById(R.id.tv1);
+	textView.setText(getStringFromNative());
 }
 
 

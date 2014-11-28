@@ -10,4 +10,3 @@ JNIEXPORT jstring JNICALL Java_com_example_um2015_testndk_MainActivity_getString
   (JNIEnv *env, jobject obj){
   return (*env)->NewStringUTF(env,"Hello From JNI");
   }
-
