@@ -1,0 +1,85 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 21
+    buildToolsVersion "20.0.0"
+
+    defaultConfig {
+        applicationId "com.example.um2015.testndk"
+        minSdkVersion 19
+        targetSdkVersion 21
+        versionCode 1
+        versionName "1.0"
+
+        ndk {
+            moduleName = "myLib"
+        }
+    }
+    buildTypes {
+        release {
+            runProguard false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    // This actual the app version code. Our given range is [0, 99999]
+    defaultConfig.versionCode = 123
+
+    // 2 dimensions of flavors. API is more important than ABI.
+    flavorGroups "api", "abi"
+
+    productFlavors {
+        icecreamSandwich {
+            flavorGroup "api"
+            minSdkVersion 18
+            // this must be higher than the gingerbread version to ensure update of the
+            // app when the device gets a system update from GB to ICS
+            versionCode = 2
+        }
+        x86 {
+            flavorGroup "abi"
+            ndk {
+                abiFilter "x86"
+            }
+            // this is the flavor part of the version code.
+            // It must be higher than the arm one for devices supporting
+            // both, as x86 is preferred.
+            versionCode = 3
+        }
+        arm {
+            flavorGroup "abi"
+            ndk {
+                abiFilter "armeabi-v7a"
+            }
+            versionCode = 2
+        }
+        mips {
+            flavorGroup "abi"
+            ndk {
+                abiFilter "mips"
+            }
+            versionCode = 1
+        }
+        fat {
+            flavorGroup "abi"
+            // fat binary, lowest version code to be
+            // the last option
+            versionCode = 0
+        }
+    }
+
+    // make per-variant version code
+    applicationVariants.all { variant ->
+        // get the version code of each flavor
+        def apiVersion = variant.productFlavors.get(0).versionCode
+        def abiVersion = variant.productFlavors.get(1).versionCode
+
+        // set the composite code
+        variant.mergedFlavor.versionCode = apiVersion * 1000000 + abiVersion * 100000 + defaultConfig.versionCode
+    }
+
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
